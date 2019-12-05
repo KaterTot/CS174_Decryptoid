@@ -13,6 +13,7 @@
 			<button type="submit">LOGOUT</button>
 		</form>
 _END;
+	// Change this craaaap to JS
 	// Form
 	echo <<<_END
 		<body><form method='post' action='final.php' enctype='multipart/form-data'>
@@ -26,6 +27,7 @@ _END;
 				<option value="simpleSub">Simple Substitution</option>
 				<option value="doubleTrans">Double Transposition</option>
 				<option value="rc4">RC4</option>
+				<option value="des">DES</option>
 			</select><br><br>
 			Input your key: <input type="text" name="key">
 			<button type="submit" name="btnEncrypt">Encrypt</button>
@@ -89,6 +91,7 @@ _END;
 		if($cipher === 'simpleSub') $output = simpleSub($text, $key, $action);
 		else if($cipher === 'doubleTrans') $output = doubleTrans($text, $key, $action);
 		else if($cipher === 'rc4') $output = rc4($text, $key, $action);
+		else if($cipher === 'des') $output = des($text, $key, $action);
 	}
 	else echo "<br>You must select a cipher.<br>";
 
@@ -256,9 +259,14 @@ _END;
 		return transp($text, $key, $action);
 	}
 
-	function RC4($text, $key)
+	function RC4($text, $key, $action)
 	{
 
+	}
+
+	function DES($text, $key, $action)
+	{
+		
 	}
 
 	function remDup($string)
