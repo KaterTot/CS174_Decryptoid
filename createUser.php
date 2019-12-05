@@ -5,7 +5,7 @@
 
 	// HTML for user, email, and pw input
 	echo <<<_END
-			<form method="post" enctype="multipart/form-data"><pre>
+			<form method="post" action="createUser.php" enctype="multipart/form-data"><pre>
 			User Creation
 			Email    <input type="text" name="email">
 			Username <input type="text" name="name"> 
@@ -31,7 +31,12 @@ _END;
 
 		$result = $conn->query($query);
 		if(!$result) die("Query failed. Cannot add user to the database. It may already exist. <br><br>");
+		
 		$result->close();
+		
+		//Redirect to login upon successful user creation
+		header("Location: login.php");
+		exit();
 	}
 	else
 	{
@@ -47,9 +52,20 @@ _END;
 		for ($i = 0; $i < $saltLength; $i++)
 		{
 			$random = rand(0, strlen($alphabet));
-			$salt .= $alphabet[$random];
+			$salt .= $alphabet[$random-1];
 		}
 
 		return $salt;
+	}
+
+	// Sanitization functions
+	function mysql_entities_fix_string($connection, $string)
+	{
+		return htmlentities(mysql_fix_string($connection, $string));
+	}
+	function mysql_fix_string($connection, $string)
+	{
+		if(get_magic_quotes_gpc()) $string = stripslashes($string);
+		return $connection->real_escape_string($string);
 	}
 ?>
