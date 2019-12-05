@@ -97,7 +97,7 @@ _END;
 	// session aint up, this line wont work
 	//$query = "INSERT INTO cipherbank (uID, input, cipher, output, cKey) VALUES ('$_SESSION['uID']','$text', '$cipher', '$output', '$key')";
 	$result = $conn->query($query);
-	if(!$result) die("Query failed. Cannot add the virus to the database.<br><br>");
+	if(!$result) die("Query failed. Cannot add the cipher to the database.<br><br>");
 
 	// Printing a table of all inputs from user
 	// session aint up, this line wont work
