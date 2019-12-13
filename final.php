@@ -9,11 +9,9 @@
 	if (isset($_SESSION['username']) &&
 		($_SESSION['check'] == hash('ripemd128', $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']))) {
 	$output = 'Your translated text will go here.';
-
 	require_once'credentials.php';
 	$conn = new mysqli($hn, $un, $pw, $db);
 	if($conn->connect_error) die ("Cannot connect to the database.");
-
 	// LOGOUT Button to redirect to first page
 	echo <<<_END
 		<html><head><title>Decryptoid</title></head>
@@ -42,12 +40,10 @@ _END;
 			<button type="submit" name="btnDecrypt">Decrypt</button>
 		</form>
 _END;
-
 	// Text output
 	echo <<<_END
 		<textarea name="output" style="width:600px; height:200px;" readonly='readonly'>$output</textarea>
 _END;
-
 	// Text variable
 	$text = '';
 	// Checking if a file was uploaded
@@ -58,7 +54,6 @@ _END;
 		if($_FILES['filename']['type'] == 'text/plain')
 		{
 			echo "Uploaded text file: '$name'<br>";
-
 			$fh = fopen($name, 'r') or die("<br>Failed to open file<br>");
 			$text = mysql_entities_fix_string($conn, fgets($fh));
 				
@@ -78,19 +73,15 @@ _END;
 		echo "<br>You must either enter a text or submit a txt file.<br>";
 	}
 	echo "</body></html>";
-
 	// Checking which button was pressed
 	$action = '';
 	$key = '';
 	$cipher = '';
-
 	if(isset($_POST['btnEncrypt'])) $action = $encrypt;
 	else if(isset($_POST['btnDecrypt'])) $action = 'decrypt';
-
 	// Checking for key
 	if (!isset($_POST['key'])) echo "<br>You must enter a key.<br>";
 	else $key = mysql_entities_fix_string($conn, $_POST['key']);
-
 	// Checking which cipher was selected
 	if (isset($_POST['cipher'])) $cipher = mysql_entities_fix_string($conn, $_POST['cipher']);
 	
@@ -98,18 +89,15 @@ _END;
 	{
 		if($cipher === 'simpleSub') $output = simpleSub($text, $key, $action);
 		else if($cipher === 'doubleTrans') $output = doubleTrans($text, $key, $action);
-		else if($cipher === 'rc4') $output = rc4($text, $key, $action);
+		else if($cipher === 'rc4') $output = rc4($text, $key);
 		else if($cipher === 'des') $output = des($text, $key, $action);
 	}
 	else echo "<br>You must select a cipher.<br>";
-
-
 	// Inserting into database
 	// session aint up, this line wont work
 	//$query = "INSERT INTO cipherbank (uID, input, cipher, output, cKey) VALUES ('$_SESSION['uID']','$text', '$cipher', '$output', '$key')";
 	$result = $conn->query($query);
 	if(!$result) die("Query failed. Cannot add the cipher to the database.<br><br>");
-
 	// Printing a table of all inputs from user
 	// session aint up, this line wont work
 	//$query = "SELECT * FROM cipherbank WHERE uID = '$_SESSION['uID']'";
@@ -131,7 +119,6 @@ _END;
 		$result->data_seek($i);
 		$row = $result->fetch_array(MYSQLI_NUM);
 		$result->close();
-
 		echo <<<_END
 		<tr>
 			<td style="text-align:center">$row[1]</td>
@@ -142,9 +129,7 @@ _END;
 		</tr>
 _END;
 		echo "</table></pre>";
-
 	}
-
 	// Sanitization functions
 	function mysql_entities_fix_string($connection, $string)
 	{
@@ -156,18 +141,14 @@ _END;
 		return $connection->real_escape_string($string);
 	}
 	//$conn->close();
-
-
 	function simpleSub($text, $key, $action)
 	{
 		if ($key > 26 || $key < 1)
 		{
 			return "key must be 26 letters or less";
 		}
-
 		$letters = 'abcdefghijklmnopqrstuvwxyz';
 		$hold = $letters;
-
 		// removes duplicate characters
 		$k = remDup($key);
 		for ($i = 0; $i < strlen($k); $i++)
@@ -179,10 +160,8 @@ _END;
 			}
 		}
 		$k .= $hold;
-
 		$cipher = '';
 		$text = strtolower($text);
-
 		for ($i = 0; $i < strlen($text); $i++)
 		{
 			if ($text[$i] === " ") $cipher .= " ";
@@ -200,21 +179,17 @@ _END;
 				}
 			}
 		}
-
 		return $cipher;
 	}
-
 	function transp($text, $key, $action)
 	{
 		if ($key > 26 || $key < 1)
 		{
 			return "key must be 26 letters or less";
 		}
-
 		$letters = 'abcdefghijklmnopqrstuvwxyz';
 		$text = strtolower($text);
 		$text = str_replace(' ', '', $text);
-
 		// Making the key matrix
 		$k = array();
 		for ($i = 0; $i < strlen($key); $i++)
@@ -223,18 +198,14 @@ _END;
 			$hold = array($index);
 			array_push($k, $hold);
 		}
-
 		// Adding the text to the matrix
 		for ($i = 0; $i < strlen($text); $i++)
 		{
 			array_push($k[$i % count($k)], $text[$i]);
 		}
 		$decrypt = $k;
-
 		sort($k);
-
 		$cipher = '';
-
 		if ($action === "Encrypt")
 		{
 			// Printing out the cipher
@@ -260,23 +231,52 @@ _END;
 		}
 		return $cipher;
 	}
-
 	function doubleTrans($text, $key, $action)
 	{
 		$text = transp($text, $key, $action);
 		return transp($text, $key, $action);
 	}
-
-	function RC4($text, $key, $action)
+	function RC4($text, $key)
 	{
+		$s = array();
+		$codes = '';
 
+		for ($i = 0; $i < 256; $i++)
+		{
+			$s[$i] = $i;
+		}
+
+		$j = 0;
+		for ($i = 0; $i < 256; $i++)
+		{
+			$j = ($j + $s[$i] + ord($key[$i % strlen($key)])) % 256;
+			swap($s[$i], $s[$j]);
+		}
+
+		$a = 0;
+		$b = 0;
+		
+		for ($i = 0; $i < strlen($text); $i++)
+		{
+			$a = ($a + 1) % 256;
+			$b = ($b + $s[$a]) % 256;
+			swap($s[$a], $s[$b]);
+			$codes .= $text[$i] ^ chr($s[($s[$a] + $s[$b]) % 256]);
+		}
+
+		return $codes;
 	}
 
+	function swap($a, $b)
+	{
+		$aHold = $a;
+		$a = $b;
+		$b = $aHold;
+	}
 	function DES($text, $key, $action)
 	{
 		
 	}
-
 	function remDup($string)
 	{
 		$result = '';
@@ -289,9 +289,7 @@ _END;
 			}
 			$result .= $string[$i];
 		}
-
 		return $result;
 	}
 } else echo "Please <a href='logout.php'>click here</a> to log in.";
-
 ?>
