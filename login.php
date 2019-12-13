@@ -24,6 +24,7 @@ _END;
 	{
 		$uname = mysql_entities_fix_string($conn, $_POST['name']);
 		$pword = mysql_entities_fix_string($conn, $_POST['pass']);
+		$query = "SELECT * FROM user WHERE uID='$uname'";
 		$result = $conn->query($query);
 		if(!$result) die ("Query failed. Cannot connect to database.");
 		$row = $result->fetch_array(MYSQLI_NUM);
@@ -39,6 +40,17 @@ _END;
 		}
 		else echo "Invalid username/password combination";
 
+	}
+
+	// Sanitization functions
+	function mysql_entities_fix_string($connection, $string)
+	{
+		return htmlentities(mysql_fix_string($connection, $string));
+	}
+	function mysql_fix_string($connection, $string)
+	{
+		if(get_magic_quotes_gpc()) $string = stripslashes($string);
+		return $connection->real_escape_string($string);
 	}
 
 ?>

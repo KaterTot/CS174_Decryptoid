@@ -28,11 +28,11 @@ _END;
 		$encryptedPword = hash('ripemd128', '$salt1$pword$salt2');
 
 		$query = "INSERT INTO user (username, email, password, salt, salt2) VALUES ('$uname', '$email', '$encryptedPword', '$salt1', '$salt2')";
-
+		echo $query;
 		$result = $conn->query($query);
 		if(!$result) die("Query failed. Cannot add user to the database. It may already exist. <br><br>");
 		
-		$result->close();
+		#$result->close();	//result is a boolean here
 		
 		//Redirect to login upon successful user creation
 		header("Location: login.php");
@@ -47,7 +47,7 @@ _END;
 	{
 		$salt = "";
 		$saltLength = 10;
-		$alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[\'^£$%&*()}{@#~?><>,|=+¬]/";
+		$alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\'^£$%&*@#~?><>,|=+¬]/";
 
 		for ($i = 0; $i < $saltLength; $i++)
 		{
