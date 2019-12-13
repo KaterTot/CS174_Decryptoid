@@ -1,6 +1,13 @@
 <?php
 	session_start();
-	if (isset($_SESSION['username'])) {
+	ini_set('session.use_only_cookies', 1);
+	ini_set('session.save_path', getcwd() . '/sessions');
+	if (!isset($_SESSION['initiated'])) {
+		session_regenerate_id();
+		$_SESSION['initiated'] = 1;
+	}
+	if (isset($_SESSION['username']) &&
+		($_SESSION['check'] == hash('ripemd128', $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']))) {
 	$output = 'Your translated text will go here.';
 
 	require_once'credentials.php';
@@ -285,6 +292,6 @@ _END;
 
 		return $result;
 	}
-} else echo "Please <a href='login.php'>click here</a> to log in.";
+} else echo "Please <a href='logout.php'>click here</a> to log in.";
 
 ?>

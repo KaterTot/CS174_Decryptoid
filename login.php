@@ -1,5 +1,11 @@
 <?php
 	session_start();
+	ini_set('session.use_only_cookies', 1);
+	ini_set('session.save_path', getcwd() . '/sessions');
+	if (!isset($_SESSION['initiated'])) {
+		session_regenerate_id();
+		$_SESSION['initiated'] = 1;
+	}
 	require_once'credentials.php';
 	$conn = new mysqli($hn, $un, $pw, $db);
 	if($conn->connect_error) die ("Cannot connect to the database.");
@@ -37,6 +43,9 @@ _END;
 		if ($token == $row[password])
 		{
 			$_SESSION['username'] = $uname;
+			ini_set('session.gc_maxlifetime', 60*60*24);
+			$_SESSION['check'] = hash('ripemd128', $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']);
+			
 			header("Location: final.php");
 			exit();
 		}
