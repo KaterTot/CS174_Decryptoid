@@ -25,10 +25,9 @@ _END;
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) die ("Please enter a valid email.");
 		$salt1 = randomSalt();
 		$salt2 = randomSalt();
-		$encryptedPword = hash('ripemd128', '$salt1$pword$salt2');
+		$encryptedPword = hash('ripemd128', "$salt1$pword$salt2");
 
 		$query = "INSERT INTO user (username, email, password, salt, salt2) VALUES ('$uname', '$email', '$encryptedPword', '$salt1', '$salt2')";
-		echo $query;
 		$result = $conn->query($query);
 		if(!$result) die("Query failed. Cannot add user to the database. It may already exist. <br><br>");
 		
@@ -47,7 +46,7 @@ _END;
 	{
 		$salt = "";
 		$saltLength = 10;
-		$alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\'^£$%&*@#~?><>,|=+¬]/";
+		$alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 		for ($i = 0; $i < $saltLength; $i++)
 		{
