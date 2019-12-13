@@ -1,5 +1,6 @@
 <?php
-
+	session_start();
+	if (isset($_SESSION['username'])) {
 	$output = 'Your translated text will go here.';
 
 	require_once'credentials.php';
@@ -9,7 +10,7 @@
 	// LOGOUT Button to redirect to first page
 	echo <<<_END
 		<html><head><title>Decryptoid</title></head>
-		<form method='post' action='login.php' enctype='multipart/form-data'>
+		<form method='post' action='logout.php' enctype='multipart/form-data'>
 			<button type="submit">LOGOUT</button>
 		</form>
 _END;
@@ -284,5 +285,6 @@ _END;
 
 		return $result;
 	}
+} else echo "Please <a href='login.php'>click here</a> to log in.";
 
 ?>

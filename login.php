@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	require_once'credentials.php';
 	$conn = new mysqli($hn, $un, $pw, $db);
 	if($conn->connect_error) die ("Cannot connect to the database.");
@@ -35,6 +36,7 @@ _END;
 		$token = hash('ripemd128', "$salt$pword$salt2");
 		if ($token == $row[password])
 		{
+			$_SESSION['username'] = $uname;
 			header("Location: final.php");
 			exit();
 		}
