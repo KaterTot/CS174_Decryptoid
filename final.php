@@ -1,7 +1,8 @@
 <?php
-	session_start();
 	ini_set('session.use_only_cookies', 1);
 	ini_set('session.save_path', getcwd() . '/sessions');
+	session_start();
+
 	if (!isset($_SESSION['initiated'])) {
 		session_regenerate_id();
 		$_SESSION['initiated'] = 1;
