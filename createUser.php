@@ -51,7 +51,6 @@
 					//Check if the field meets the minimum length requirement
 					else if(field.length < $USERNAME_LENGTH)
 						return 'Username must contain more than $USERNAME_LENGTH characters. \\n';
-
 					//Check that the username only contains alphanumeric, underscores and hyphens
 					else if(/[^a-zA-Z0-9_-]/.test(field))
 						return 'Username can only contain alphanumeric symbols, "_" and "-" \\n';
@@ -174,9 +173,7 @@ _END;
 		$query = "INSERT INTO user (username, email, password, salt, salt2) VALUES ('$uname', '$email', '$encryptedPword', '$salt1', '$salt2')";
 		$result = $conn->query($query);
 		if(!$result) die("Query failed. Cannot add user to the database. It may already exist. <br><br>");
-		
 		#$result->close();	//result is a boolean here
-		
 		//Redirect to login upon successful user creation
 		header("Location: login.php");
 		exit();
