@@ -169,7 +169,7 @@
 
 		$min = array(40, 8, 48, 16, 56, 24, 64, 32, 39, 7, 47, 15, 55, 23, 63, 31, 38, 6, 46, 14, 54, 22, 62, 30, 37, 5, 45, 13, 53, 21, 61, 29, 36, 4, 44, 12, 52, 20, 60, 28, 35, 3, 43, 11, 51, 19, 59, 27, 34, 2, 42, 10, 50, 18, 58, 26, 33, 1, 41, 9, 49, 17, 57, 25);
 
-		if ($action === 'decrypt')
+		if ($action === 'Decrypt')
 		{
 			$text = base64_decode($text);
 		}
@@ -188,8 +188,8 @@
 
 		$lc = array();
 		$ld = array();
-		$cshift = implode(" ", $c);
-		$dshift = implode(" ", $d);
+		$cshift = implode("", $c);
+		$dshift = implode("", $d);
 
 		for($i = 0; $i < 16; $i++)
 		{
@@ -206,7 +206,7 @@
 		$keyPC2 = array();
 		for ($i = 0; $i < 16; $i++)
 		{
-			$val = implode(" ", initialPerm($lc[$i].$ld[$i], $pc2));
+			$val = implode("", initialPerm($lc[$i].$ld[$i], $pc2));
 			array_push($keyPC2, $val);
 		}
 
@@ -220,11 +220,12 @@
 
 		for ($i = 0; $i < 16; $i++)
 		{
-			$initial = implode(" ", initialPerm($concatedR, $e));
+			$initial = implode("", initialPerm($concatedR, $e));
 			$xor = "";
 			for ($j = 0; $j < strlen($initial); $j++)
 			{
-				$xor .= ($initial[$j] == $keyPC2[$i][$j]) ? "0" : "1";
+				if ($action === 'Encrypt') $xor .= ($initial[$j] == $keyPC2[$i][$j]) ? "0" : "1";
+				else $xor .= ($initial[$j] == $keyPC2[15 - $i][$j]) ? "0" : "1";
 			}
 
 			$split = splitTxt($xor, 6);
@@ -262,12 +263,11 @@
 
 		for ($i = 0; $i < count($ciph); $i++)
 		{
-			$s = ($i == 7) ? "" : "/";
 			$fin .= chr(bindec(bin2text($ciph[$i])));
 		}
 
-		if ($action === 'encrypt') return base64_encode($fin);
-		else if ($action === 'decrypt') return str_replace("#", "", $fin);
+		if ($action === 'Encrypt') return base64_encode($fin);
+		else if ($action === 'Decrypt') return str_replace("#", "", $fin);
 	}
 
 	function splitTxt($x, $y)
