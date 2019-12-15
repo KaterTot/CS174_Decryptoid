@@ -77,7 +77,7 @@ _END;
 	$action = '';
 	$key = '';
 	$cipher = '';
-	if(isset($_POST['btnEncrypt'])) $action = $encrypt;
+	if(isset($_POST['btnEncrypt'])) $action = 'encrypt';
 	else if(isset($_POST['btnDecrypt'])) $action = 'decrypt';
 	// Checking for key
 	if (!isset($_POST['key'])) echo "<br>You must enter a key.<br>";
@@ -94,13 +94,11 @@ _END;
 	}
 	else echo "<br>You must select a cipher.<br>";
 	// Inserting into database
-	// session aint up, this line wont work
-	//$query = "INSERT INTO cipherbank (uID, input, cipher, output, cKey) VALUES ('$_SESSION['uID']','$text', '$cipher', '$output', '$key')";
+	$query = "INSERT INTO cipherbank (uID, input, cipher, output, cKey) VALUES ('$_SESSION['uID']','$text', '$cipher', '$output', '$key')";
 	$result = $conn->query($query);
 	if(!$result) die("Query failed. Cannot add the cipher to the database.<br><br>");
 	// Printing a table of all inputs from user
-	// session aint up, this line wont work
-	//$query = "SELECT * FROM cipherbank WHERE uID = '$_SESSION['uID']'";
+	$query = "SELECT * FROM cipherbank WHERE uID = '$_SESSION['uID']'";
 	$result = $conn->query($query);
 	if(!$result) die ("Query failed. Cannot connect to database.");
 	$rows = $result->num_rows;
@@ -140,7 +138,7 @@ _END;
 		if(get_magic_quotes_gpc()) $string = stripslashes($string);
 		return $connection->real_escape_string($string);
 	}
-	//$conn->close();
+	$conn->close();
 	function simpleSub($text, $key, $action)
 	{
 		if ($key > 26 || $key < 1)
