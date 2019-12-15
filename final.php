@@ -367,17 +367,44 @@
 	// LOGOUT Button to redirect to first page
 	echo <<<_END
 		<html><head><title>Decryptoid</title></head>
-		<form method='post' action='logout.php' enctype='multipart/form-data'>
+		
+		<form method='post' action='logout.php' enctype='multipart/form-data' id="logoutButton">
 			<button type="submit">LOGOUT</button>
 		</form>
 _END;
 
 	// Form
 	echo <<<_END
+
+		<style>
+			body{
+				font-family: Arial;
+				color: white;
+				background-color: rgb(38,202,235);
+				text-align: center;
+			}
+			body textarea, input, select, button{
+				border: none;
+				border-radius: 3px;
+			}
+			#logoutButton button{
+				float: right;
+				font-family: Arial Black;
+				border: none;
+				border-radius: 3px;
+			}
+			#logoutButton button:hover{
+				color: white;
+				background-color: rgb(208, 54, 54);
+				font-family: Arial Black;
+				border: none;
+			}
+		</style>
+
 		<body><form method='post' action='final.php' enctype='multipart/form-data'>
 			<!-- Text Input -->
 			<textarea name="input" style="width:600px; height:200px;">Enter your text here or submit a text file below.</textarea><br>
-			<!-- Upload only TXT files -->
+			<!-- Upload only TXT files --><br><br>
 			Select TXT File: <input type='file' name='filename' size='10'>
 			<!-- Decrypt / encrypt button and select Cipher from drop down list -->
 			<select name="cipher" value="Select a Cipher">
@@ -386,7 +413,7 @@ _END;
 				<option value="doubleTrans">Double Transposition</option>
 				<option value="rc4">RC4</option>
 				<option value="des">DES</option>
-			</select><br><br>
+			</select><br><br><br><br>
 			Input your key: <input type="text" name="key">
 			<button type="submit" name="btnEncrypt">Encrypt</button>
 			<button type="submit" name="btnDecrypt">Decrypt</button>

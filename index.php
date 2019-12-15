@@ -20,6 +20,9 @@
 
 			<!-- Javascript for client-side validation -->
 			<script>
+				//Log in validation will only check and notify if there are empty fields
+				//since we don't want to give the user too much information about what is
+				//incorrect and the server does the real validation.
 				function validateLogin(form){
 					var errors = validateUsername(form.name.value);
 					errors += validatePassword(form.pass.value);
@@ -33,15 +36,7 @@
 					var trimmedField = field.trim();
 					if(trimmedField == "") return 'No Username was entered.\\n';
 			
-					//Check if the field meets the minimum length requirement
-					else if(field.length < $USERNAME_LENGTH)
-						return 'Username must contain more than $USERNAME_LENGTH characters. \\n';
-
-					//Check that the username only contains alphanumeric, underscores and hyphens
-					else if(/[^a-zA-Z0-9_-]/.test(field))
-						return 'Username can only contain alphanumeric symbols, "_" and "-" \\n';
-			
-					//return "" if no errors were found	
+					//return "" if the user entered something
 					return "";
 				}
 
@@ -49,12 +44,8 @@
 					//Check if the field is empty
 					var trimmedField = field.trim();
 					if(trimmedField == "") return 'No Password was entered.\\n';
-			
-					//Check that the password contains at least one uppercase, one lowercase and one number 0-9
-					else if(!/[a-z]/.test(field) || !/[A-Z]/.test(field) || !/[0-9]/.test(field))
-						return 'Password requires: at least one Uppercase Symbol,\\n at least one Lowercase Symbol,\\n at least one numeric symbol (0-9) \\n';
 					
-					//return "" if no errors were found
+					//return "" if the user entered something
 					return "";
 				}
 			</script>
