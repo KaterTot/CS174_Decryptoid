@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	destroy_session_and_data();
-	header("Location: login.php");
+	header("Location: index.php");
 
 	//destroys session
 	function destroy_session_and_data() {

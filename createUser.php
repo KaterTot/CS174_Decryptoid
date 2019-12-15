@@ -175,7 +175,7 @@ _END;
 		#$result->close();	//result is a boolean here
 
 		//Redirect to login upon successful user creation
-		header("Location: login.php");
+		header("Location: index.php");
 		exit();
 	}
 	else
