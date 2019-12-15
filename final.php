@@ -452,8 +452,9 @@ _END;
 	$text = '';
 	$output = '';
 	// Checking if a file was uploaded
-	if(isset($_FILES['filename']['name']))
+	if(!empty($_FILES['filename']['name']))
 	{
+		echo 'UPAAAA';
 		$name = $_FILES['filename']['name'];
 		$name = strtolower(preg_replace("[^A-Za-z0-9]", "", $name));
 		if($_FILES['filename']['type'] == 'text/plain')
