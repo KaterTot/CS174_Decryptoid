@@ -2,8 +2,7 @@ CREATE DATABASE final;
 USE final;
 
 CREATE TABLE user(
-	uID INT PRIMARY KEY AUTO_INCREMENT,
-	username VARCHAR(128) UNIQUE,
+	username VARCHAR(128) PRIMARY KEY ,
 	email VARCHAR(128) UNIQUE,
 	password VARCHAR(128),
 	SALT CHAR(10),
@@ -11,13 +10,13 @@ CREATE TABLE user(
 );
 
 CREATE TABLE cipherbank(
-	uID INT,
+	username VARCHAR(128),
 	inputTime TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
 	input VARCHAR(1000),
 	cipher VARCHAR(20),
 	output VARCHAR(1000),
 	cKey VARCHAR(26),
-	FOREIGN KEY (uid) REFERENCES user(uID) ON DELETE CASCADE
+	FOREIGN KEY (username) REFERENCES user(username) ON DELETE CASCADE
 );
 
 GRANT ALL ON final.* TO 'potatokatie'@'localhost' IDENTIFIED BY '1l1k3r0ck$';
