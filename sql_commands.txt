@@ -16,6 +16,7 @@ CREATE TABLE cipherbank(
 	cipher VARCHAR(20),
 	output VARCHAR(1000),
 	cKey VARCHAR(26),
+	method VARCHAR(26),
 	FOREIGN KEY (username) REFERENCES user(username) ON DELETE CASCADE
 );
 
