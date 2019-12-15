@@ -475,40 +475,7 @@ _END;
 	$uName = $_SESSION['username'];
 	$query = "INSERT INTO cipherbank (username, input, cipher, output, cKey, method) VALUES ('$uName','$text', '$cipher', '$output', '$key', '$action')";
 	$result = $conn->query($query);
-	if(!$result) die("Query failed. Cannot add the cipher to the database.<br><br>");
-	// Printing a table of all inputs from user
-	$query = "SELECT * FROM cipherbank WHERE username = '$uName'";
-	$result = $conn->query($query);
-	if(!$result) die ("Query failed. Cannot connect to database.");
-	$rows = $result->num_rows;
-	echo <<<_END
-		<pre><table style="width:50%">
-		<tr>
-			<th>Input Time</th>
-			<th>Cipher</th>
-			<th>Key</th>
-			<th>Input</th>
-			<th>Output</th>
-			<th>Method</th>
-		</tr>
-_END;
-	for($i = 0; $i < $rows; $i++)
-	{
-		$result->data_seek($i);
-		$row = $result->fetch_array(MYSQLI_NUM);
-
-		echo <<<_END
-		<tr>
-			<td style="text-align:center">$row[1]</td>
-			<td style="text-align:center">$row[3]</td>
-			<td style="text-align:center">$row[5]</td>
-			<td style="text-align:center">$row[2]</td>
-			<td style="text-align:center">$row[4]</td>
-			<td style="text-align:center">$row[6]</td>
-		</tr>
-_END;
-	}
-	echo "</table></pre>";
+	if(!$result) die("Error adding cipher.  Please try again.<br><br>");
 	$result->close();
 	$conn->close();
 	

@@ -171,7 +171,7 @@ _END;
 
 		$query = "INSERT INTO user (username, email, password, salt, salt2) VALUES ('$uname', '$email', '$encryptedPword', '$salt1', '$salt2')";
 		$result = $conn->query($query);
-		if(!$result) die("Query failed. Cannot add user to the database. It may already exist. <br><br>");
+		if(!$result) die("<br><br><br><br><br>Cannot add user to the database. It may already exist. <br><br>");
 		#$result->close();	//result is a boolean here
 
 		//Redirect to login upon successful user creation

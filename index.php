@@ -139,7 +139,7 @@ _END;
 		$pword = mysql_entities_fix_string($conn, $_POST['pass']);
 		$query = "SELECT * FROM user WHERE username='$uname'";
 		$result = $conn->query($query);
-		if(!$result) die ("Query failed. Cannot connect to database.");
+		if(!$result) die ("Cannot connect to database.");
 		$row = $result->fetch_array(MYSQLI_ASSOC);
 		$result->close();
 
