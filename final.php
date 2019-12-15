@@ -63,126 +63,71 @@
 	}
 	function doubleTrans($text, $key, $action)
 	{
-		if (strlen($key) > 26 || strlen($key) < 1)
+		if (strlen($key) < 2)
 		{
-			die("key must be 26 letters or less");
+			die("key must be at least 2 letters");
 		}
 		$letters = 'abcdefghijklmnopqrstuvwxyz';
 		$text = strtolower($text);
 		$text = str_replace(' ', '', $text);
-		// Making the key matrix
-		$k = array();
-		for ($i = 0; $i < strlen($key); $i++)
-		{
-			$index = strpos($letters, $key[$i]);
-			$hold = array($index);
-			array_push($k, $hold);
-		}
-		// Adding the text to the matrix
-		for ($i = 0; $i < strlen($text); $i++)
-		{
-			array_push($k[$i % count($k)], $text[$i]);
-		}
-		usort($k, "cmp");
-		$decrypt = $k;
-		$cipher = '';
+		$rows = strlen($text) / strlen($key);
+		$count = 0;
+		$dCipher = '';
+
 		if ($action === "Encrypt")
 		{
-			// Printing out the cipher
-			$index = 0;
-			for ($j = 1; $j < count($k[$index]); $j++)
+			while (strlen($text) % strlen($key) !== 0)
 			{
-				for ($i = 0; $i < count($k); $i++)
-				{
-					if (array_key_exists($j, $k[$i])) $cipher.= $k[$i][$j];
-				}
-				$index++;
+				$text .= 'x';
 			}
-
-			//Second transp
-			$nK = array();
 			for ($i = 0; $i < strlen($key); $i++)
 			{
-				$index = strpos($letters, $key[$i]);
-				$hold = array($index);
-				array_push($nK, $hold);
-			}
-			
-			// Adding the text to the matrix
-			$j = 0;
-			for ($i = 0; $i < strlen($cipher); $i++)
-			{
-				if((strlen($cipher) - $i) % count($nK) !== $j)
+				while ($count < strlen($letters))
 				{
-					array_push($nK[$j], $cipher[$i]);
+					$index = strpos($key, $letters[$count]);
+					if (!empty($index) || $index === 0)
+					{
+						$key[strpos($key, $letters[$count])] = ".";
+						break;
+					}
+					else $count++;
 				}
-				else
+				for ($j = 0; $j < $rows; $j++)
 				{
-					$j++;
-					array_push($nK[$j], $cipher[$i]);
+					$dCipher .= $text[$j * strlen($key) + $index];
 				}
-			}
-			usort($nK, "cmp");
-			$dCipher = '';
-			// Printing out the cipher
-			$index = 0;
-			for ($j = 1; $j < count($nK[$index]); $j++)
-			{
-				for ($i = 0; $i < count($nK); $i++)
-				{
-					if (array_key_exists($j, $nK[$i])) $dCipher.= $nK[$i][$j];
-				}
-				$index++;
 			}
 		}
 		else if ($action === "Decrypt")
 		{
-			for ($i = 0; $i < count($decrypt); $i++)
-			{
-				for ($j = 1; $j < count($decrypt[$i]); $j++)
-				{
-					$cipher.= $decrypt[$i][$j];
-				}
-			}
+			$columns = array_fill(0, strlen($key), "");
 
-			//Second transp
-			$nK = array();
 			for ($i = 0; $i < strlen($key); $i++)
 			{
-				$index = strpos($letters, $key[$i]);
-				$hold = array($index);
-				array_push($nK, $hold);
+				$columns[$i] = substr($text, $rows * $i, $rows);
 			}
-			
-			// Adding the text to the matrix
-			for ($i = 0; $i < strlen($cipher); $i++)
-			{
-				array_push($nK[$i % count($nK)], $cipher[$i]);
-			}
-			usort($nK, "cmp");
-			$dCipher = '';
 
-			// Printing out the cipher
+			$sorted = array_fill(0, strlen($key), '');
 			$index = 0;
-			for ($j = 1; $j < count($nK[$index]); $j++)
+			
+			while ($index < strlen($key))
 			{
-				for ($i = 0; $i < count($nK); $i++)
+				if (!empty(strpos($key, $letters[$count])) || strpos($key, $letters[$count]) === 0)
 				{
-					if (array_key_exists($j, $nK[$i])) $dCipher.= $nK[$i][$j];
+					$sorted[strpos($key, $letters[$count])] = $columns[$index++];
+					$key[strpos($key, $letters[$count])] = ".";
 				}
-				$index++;
+				else $count++;
+			}
+			for ($i = 0; $i < $rows; $i++)
+			{
+				for ($j = 0; $j < strlen($key); $j++)
+				{
+					$dCipher .= $sorted[$j][$i];
+				}
 			}
 		}
 		return $dCipher;
-	}
-
-	function cmp($a, $b)
-	{
-		if ($a[0] == $b[0])
-		{
-			return 0;
-		}
-		return ($a[0] < $b[0]) ? - 1 : 1;
 	}
 	function RC4($text, $key)
 	{
