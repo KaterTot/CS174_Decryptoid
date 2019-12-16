@@ -1,6 +1,6 @@
 <?php
 	ini_set('session.use_only_cookies', 1);
-	ini_set('session.save_path', getcwd() . '/sessions');
+	ini_set('session.save_path', '/home/decryptoid/sessions');
 	session_start();
 	if (!isset($_SESSION['initiated'])) {
 		session_regenerate_id();
@@ -9,6 +9,7 @@
 	if (isset($_SESSION['username']) &&
 		($_SESSION['check'] == hash('ripemd128', $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']))) {
 	require_once'credentials.php';
+	define("DEFAULT_RC4", 'rc4');
 
 	// START PHP FUNCTIONS ---------------------------------------------------------------------------------------
 	// Sanitization functions
@@ -129,8 +130,9 @@
 		}
 		return $dCipher;
 	}
-	function RC4($text, $key)
+	function RC4($text)
 	{
+		$key = DEFAULT_RC4;
 		$s = array();
 		$codes = '';
 		for ($i = 0; $i < 256; $i++)
@@ -466,7 +468,7 @@ _END;
 	{
 		if($cipher === 'simpleSub') $output = simpleSub($text, $key, $action);
 		else if($cipher === 'doubleTrans') $output = doubleTrans($text, $key, $action);
-		else if($cipher === 'rc4') $output = rc4($text, $key);
+		else if($cipher === 'rc4') $output = rc4($text);
 		else if($cipher === 'des') $output = des($text, $key, $action);
 		echo "Output: ".$output;
 	}

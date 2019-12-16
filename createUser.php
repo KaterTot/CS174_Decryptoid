@@ -1,12 +1,13 @@
 <?php
-	//Global Variables
-	$USERNAME_LENGTH = 5;
+	define("USERNAME_LENGTH", 5);
 
 	require_once'credentials.php';
 	$conn = new mysqli($hn, $un, $pw, $db);
 	if($conn->connect_error) die ("Cannot connect to the database.");
 
 	// HTML for user, email, and pw input
+	//Global Variables
+	$USERNAME_LENGTH = USERNAME_LENGTH;
 	echo <<<_END
 		<head>
 		<!-- Javascript for client-side validation -->
