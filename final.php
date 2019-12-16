@@ -132,28 +132,39 @@
 	function RC4($text, $key)
 	{
 		$s = array();
+		$i = 0;
+		$j = 0;
 		$codes = '';
+
 		for ($i = 0; $i < 256; $i++)
 		{
 			$s[$i] = $i;
 		}
-		$j = 0;
+
 		for ($i = 0; $i < 256; $i++)
 		{
-			$j = ($j + $s[$i] + ord($key[$i % strlen($key)])) % 256;
+			$j = ($j + $s[$i] + ord($key[$i % mb_strlen($key, 'UTF-8')])) % 256;
 			swap($s[$i], $s[$j]);
 		}
-		$a = 0;
-		$b = 0;
 		
-		for ($i = 0; $i < strlen($text); $i++)
+		$j = 0;
+		for ($k = 0; $k < mb_strlen($text, 'UTF-8'); $k++)
 		{
-			$a = ($a + 1) % 256;
-			$b = ($b + $s[$a]) % 256;
-			swap($s[$a], $s[$b]);
-			$codes .= $text[$i] ^ chr($s[($s[$a] + $s[$b]) % 256]);
+			$i = ($i + 1) % 256;
+			$j = ($j + $s[$i]) % 256;
+			swap($s[$i], $s[$j]);
+			$codes .= cnvEncode(mbord(mb_substr($text, $k, 1, 'UTF-8')) ^ $s[($s[$i] + $s[$j]) % 256]);
 		}
 		return $codes;
+	}
+	function cnvEncode($c)
+	{
+		return mb_convert_encoding('&#'.intval($c).';','UTF-8', 'HTML-ENTITIES');
+	}
+	function mbord($c)
+	{
+		$hold = unpack( 'N', mb_convert_encoding($c, 'UCS-4BE', 'UTF-8'));
+        return (is_array($hold) === true) ?  $hold[1] : ord($c);
 	}
 	function swap($a, $b)
 	{
@@ -476,7 +487,6 @@ _END;
 	$query = "INSERT INTO cipherbank (username, input, cipher, output, cKey, method) VALUES ('$uName','$text', '$cipher', '$output', '$key', '$action')";
 	$result = $conn->query($query);
 	if(!$result) die("Error adding cipher.  Please try again.<br><br>");
-	$result->close();
 	$conn->close();
 	
 } else echo "Please <a href='logout.php'>click here</a> to log in.";
