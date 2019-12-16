@@ -1,4 +1,6 @@
 <?php
+	ini_set('session.use_only_cookies', 1);
+	ini_set('session.save_path', '/home/decryptoid/sessions');
 	session_start();
 	destroy_session_and_data();
 	header("Location: index.php");
