@@ -403,7 +403,7 @@ _END;
 
 		<body><form method='post' action='final.php' enctype='multipart/form-data'>
 			<!-- Text Input -->
-			<textarea name="input" style="width:600px; height:200px;">Enter your text here or submit a text file below.</textarea><br>
+			<textarea name="input" style="width:600px; height:200px;" placeholder="Enter your text here or submit a text file below."></textarea><br>
 			<!-- Upload only TXT files --><br><br>
 			Select TXT File: <input type='file' name='filename' size='10'>
 			<!-- Decrypt / encrypt button and select Cipher from drop down list -->
