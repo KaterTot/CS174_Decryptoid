@@ -168,6 +168,7 @@ _END;
 		if(get_magic_quotes_gpc()) $string = stripslashes($string);
 		return $connection->real_escape_string($string);
 	}
+	$conn->close();
 
 
 ?>
